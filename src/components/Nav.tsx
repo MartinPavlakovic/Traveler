@@ -17,14 +17,15 @@ export default function Nav() {
   ];
 
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const lightTextPages = ['/', '/login', '/register'];
+  const isLightText = lightTextPages.includes(location.pathname);
 
   return (
     <motion.nav
       variants={navigation}
       initial="hidden"
       animate="visible"
-      className={`flex justify-between align-center w-full font-bold text-lg font-roboto ${isHomePage ? 'text-white' : 'text-black'} p-8 fixed z-2`}>
+      className={`flex justify-between align-center w-full font-bold text-lg font-roboto ${isLightText ? 'text-white' : 'text-black'} p-8 fixed z-2`}>
       {/* Left nav links */}
       <div>
         <MotionLink to="/" variants={navigationItem}>
