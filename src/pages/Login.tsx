@@ -1,18 +1,44 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import Background from '../components/Background';
 import { buttonAnim } from '../utils/animation';
 import { Link } from 'react-router-dom';
+import { auth } from '../firebase/config';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const MotionLink = motion.create(Link);
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.SubmitEvent) => {
+    e.preventDefault();
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('Logged in successfully!');
+      navigate('/');
+    } catch (err: any) {
+      if (err.code === 'auth/invalid-credential') {
+        alert('Invalid email or password');
+      } else {
+        alert('Something went wrong');
+      }
+    }
+  };
+
   return (
     <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
       <Background />
       <motion.form
-        className="w-full max-w-md px-6 py-10 bg-white rounded-xl"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 0.5 } }}>
+        onSubmit={handleLogin}
+        className="relative z-10 w-full max-w-md px-6 py-10 bg-white rounded-xl shadow-2xl"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">
             Welcome Back
@@ -22,14 +48,20 @@ export default function Login() {
 
         <div className="mb-6">
           <input
-            type="text"
-            placeholder="Username"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 hover:border-aqua focus:border-aqua focus:outline-none rounded-lg mb-4"
+            required
           />
           <input
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 hover:border-aqua focus:border-aqua focus:outline-none rounded-lg mb-4"
+            required
           />
         </div>
 

@@ -1,19 +1,36 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { navigation, navigationItem, lineAnim } from '../utils/animation';
+import { navigation, navigationItem } from '../utils/animation';
+import { auth } from '../firebase/config';
+import { signOut } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import ButtonLine from './ButtonLine';
+import { useAuth } from '../context/AuthContext';
 
 const MotionLink = motion.create(Link);
 
 export default function Nav() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+
+      alert('Signed out successfully');
+      if (location.pathname !== '/') {
+        navigate('/');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Something went wrong');
+    }
+  };
+
   const middleLinks = [
     { name: 'EXPLORE', path: '/explore' },
     { name: 'CHATS', path: '/chats' },
     { name: 'PROFILE', path: '/profile' },
-  ];
-
-  const rightLinks = [
-    { name: 'LOG IN', path: '/login' },
-    { name: 'SIGN UP', path: '/register' },
   ];
 
   const location = useLocation();
@@ -27,11 +44,11 @@ export default function Nav() {
       animate="visible"
       className={`flex justify-between align-center w-full font-bold text-lg font-roboto ${isLightText ? 'text-white' : 'text-black'} p-8 fixed z-2`}>
       {/* Left nav links */}
-      <div>
+      <>
         <MotionLink to="/" variants={navigationItem}>
           ko task na praks
         </MotionLink>
-      </div>
+      </>
       {/* Middle nav links*/}
       <div className="flex gap-12">
         {middleLinks.map(link => (
@@ -41,38 +58,38 @@ export default function Nav() {
             variants={navigationItem}
             className="relative">
             {link.name}
-            <motion.div
-              className="absolute inset-0 z-20"
-              initial="initial"
-              whileHover="hovered">
-              <motion.div
-                className="absolute inset-0 z-10 border-l-2"
-                variants={lineAnim}
-              />
-            </motion.div>
+            <ButtonLine />
           </MotionLink>
         ))}
       </div>
       {/* Right nav links */}
       <div className="flex gap-8 mr-8">
-        {rightLinks.map(link => (
-          <MotionLink
-            key={link.name}
-            to={link.path}
+        {!loading && !user ? (
+          <>
+            <MotionLink
+              to="/login"
+              variants={navigationItem}
+              className="relative">
+              LOG IN
+              <ButtonLine />
+            </MotionLink>
+            <MotionLink
+              to="/register"
+              variants={navigationItem}
+              className="relative">
+              SIGN UP
+              <ButtonLine />
+            </MotionLink>
+          </>
+        ) : !loading && user ? (
+          <motion.button
+            onClick={handleLogout}
             variants={navigationItem}
-            className="relative">
-            {link.name}
-            <motion.div
-              className="absolute inset-0 z-20"
-              initial="initial"
-              whileHover="hovered">
-              <motion.div
-                className="absolute inset-0 z-10 border-l-2"
-                variants={lineAnim}
-              />
-            </motion.div>
-          </MotionLink>
-        ))}
+            className="relative cursor-pointer bg-transparent border-none">
+            LOG OUT
+            <ButtonLine />
+          </motion.button>
+        ) : null}
       </div>
     </motion.nav>
   );

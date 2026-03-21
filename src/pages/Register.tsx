@@ -7,7 +7,7 @@ const MotionLink = motion.create(Link);
 
 export default function Register() {
   return (
-    <div>
+    <>
       <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
         <Background />
         <motion.form
@@ -59,6 +59,6 @@ export default function Register() {
           </MotionLink>
         </motion.form>
       </div>
-    </div>
+    </>
   );
 }
