@@ -1,13 +1,10 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { navigation, navigationItem } from '../utils/animation';
+import { navigation, navigationItem, MotionLink } from '../utils/animation';
 import { auth } from '../firebase/config';
 import { signOut } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
 import ButtonLine from './ButtonLine';
 import { useAuth } from '../context/AuthContext';
-
-const MotionLink = motion.create(Link);
 
 export default function Nav() {
   const navigate = useNavigate();

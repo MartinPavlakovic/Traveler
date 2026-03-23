@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+
 export const navigation = {
   hidden: { opacity: 0 },
   visible: {
@@ -24,3 +27,5 @@ export const buttonAnim = {
   whileTap: { scale: 0.95 },
   transition: { type: 'spring', stiffness: 400, damping: 25 },
 } as const;
+
+export const MotionLink = motion.create(Link);

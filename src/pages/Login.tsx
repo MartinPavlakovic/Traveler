@@ -2,12 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import Background from '../components/Background';
-import { buttonAnim } from '../utils/animation';
-import { Link } from 'react-router-dom';
+import { buttonAnim, MotionLink } from '../utils/animation';
 import { auth } from '../firebase/config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-
-const MotionLink = motion.create(Link);
 
 export default function Login() {
   const [email, setEmail] = useState('');

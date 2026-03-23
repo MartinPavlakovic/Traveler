@@ -1,16 +1,57 @@
 import { motion } from 'motion/react';
 import Background from '../components/Background';
-import { buttonAnim } from '../utils/animation';
-import { Link } from 'react-router-dom';
-
-const MotionLink = motion.create(Link);
+import { buttonAnim, MotionLink } from '../utils/animation';
+import { setDoc, doc } from 'firebase/firestore';
+import { db, auth } from '../firebase/config';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState<User>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setUser(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    },
+    [],
+  );
+
+  const handleRegister = async (e: React.SubmitEvent) => {
+    e.preventDefault();
+
+    const { password, ...newUser } = user;
+
+    try {
+      const createdUser = await createUserWithEmailAndPassword(
+        auth,
+        user.email.trim(),
+        user.password.trim(),
+      );
+      await setDoc(doc(db, 'users', createdUser.user.uid), newUser);
+      alert('User created successfully');
+      navigate('/');
+    } catch {
+      alert('sum-ting went-wong');
+    }
+  };
+
   return (
     <>
       <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
         <Background />
         <motion.form
+          onSubmit={handleRegister}
           className="w-full max-w-md px-6 py-10 bg-white rounded-xl"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { delay: 0.5 } }}>
@@ -23,24 +64,40 @@ export default function Register() {
 
           <div className="mb-6">
             <input
+              required
               type="text"
+              name="firstName"
               placeholder="First name"
               className="w-full px-4 py-3 border border-gray-300 hover:border-aqua focus:border-aqua focus:outline-none rounded-lg mb-4"
+              value={user.firstName}
+              onChange={handleInputChange}
             />
             <input
+              required
               type="text"
+              name="lastName"
               placeholder="Last name"
               className="w-full px-4 py-3 border border-gray-300 hover:border-aqua focus:border-aqua focus:outline-none rounded-lg mb-4"
+              value={user.lastName}
+              onChange={handleInputChange}
             />
             <input
+              required
               type="email"
+              name="email"
               placeholder="Email"
               className="w-full px-4 py-3 border border-gray-300 hover:border-aqua focus:border-aqua focus:outline-none rounded-lg mb-4"
+              value={user.email}
+              onChange={handleInputChange}
             />
             <input
+              required
               type="password"
+              name="password"
               placeholder="Password"
               className="w-full px-4 py-3 border border-gray-300 hover:border-aqua focus:border-aqua focus:outline-none rounded-lg mb-4"
+              value={user.password}
+              onChange={handleInputChange}
             />
           </div>
 
