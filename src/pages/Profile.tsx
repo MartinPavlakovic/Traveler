@@ -39,15 +39,57 @@ export default function Profile() {
   if (loading) return null;
   if (!user) return <Navigate to="/login" />;
   return (
-    <div className="bg-[#f3f3f3] w-[60%] m-auto mt-50 absolute">
-      <div>
-        <img src={user.profileImageURL} alt="profileIMG" />
-        <input type="file" onChange={handleInputChange} />
-      </div>
-      <div>
-        <h3>First name: {user?.firstName}</h3>
-        <h3>Last name: {user?.lastName}</h3>
-        <h3>Email: {user?.email}</h3>
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-300 p-8">
+      <div className="w-1/2 mx-auto">
+        <div className="bg-white rounded-2xl shadow-lg p-8 flex gap-8 mt-20">
+          <div className="flex flex-col items-center space-y-4">
+            <img
+              src={user.profileImageURL}
+              alt="profileIMG"
+              className="w-48 h-48 object-cover border-4 border-slate-200 shadow-md"
+            />
+            <label className="cursor-pointer">
+              <input
+                type="file"
+                onChange={handleInputChange}
+                className="hidden"
+                accept="image/*"
+              />
+              <span className="inline-block px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium text-sm transition-colors duration-200">
+                Change Photo
+              </span>
+            </label>
+          </div>
+
+          <div className="flex-1 space-y-4 pt-4">
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                First Name
+              </p>
+              <p className="text-lg text-slate-900 font-medium">
+                {user?.firstName}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Last Name
+              </p>
+              <p className="text-lg text-slate-900 font-medium">
+                {user?.lastName}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                Email
+              </p>
+              <p className="text-lg text-slate-900 font-medium break-all">
+                {user?.email}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12 min-h-96"></div>
       </div>
     </div>
   );
